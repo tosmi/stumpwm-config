@@ -29,10 +29,15 @@
 
 (toggle-mode-line (current-screen) (current-head))
 
+(defcommand ssh-to-host (host) ((:string "Host: "))
+	    "Run ssh to connect to a remote host."
+	    (run-shell-command (format nil "xterm -e ssh ~a" host)))
+
+(defcommand firefox () ()
+	    "Start firefox unless it is already running, in which case focus it."
+	    (run-or-raise "firefox" '(:class "Firefox")))
+
 (define-key *root-map* (kbd "C-l") "exec xlock")
 (define-key *root-map* (kbd "c") "exec xterm -ls")
 (define-key *root-map* (kbd "C-s") "ssh-to-host")
-
-(defcommand ssh-to-host (host)
-  ((:string "Host: "))
-  (run-shell-command (format nil "xterm -e ssh ~a" host)))
+(define-key *root-map* (kbd "C-f") "firefox")
