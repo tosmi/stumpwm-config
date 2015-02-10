@@ -1,2 +1,2 @@
 # stumpwm-config
-My [stumpwm][https://stumpwm.github.io/] configuration
+My [stumpwm](https://stumpwm.github.io/) configuration
