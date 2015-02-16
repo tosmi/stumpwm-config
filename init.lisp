@@ -22,6 +22,8 @@
 (setf *screen-mode-line-format* "[%n] %W |  %l | %c | %t")
 (setf *mode-line-position* :bottom)
 (setf *window-border-style* :THIN)
+(setf *message-window-gravity* :center)
+(setf *input-window-gravity* :center)
 
 (set-win-bg-color "black")
 (set-focus-color "red")
@@ -37,7 +39,57 @@
 	    "Start firefox unless it is already running, in which case focus it."
 	    (run-or-raise "firefox" '(:class "Firefox")))
 
+(defun global-window-names ()
+  "Returns a list of the names of all the windows in the current screen."
+  (let ((groups (sort-groups (current-screen)))
+	(windows nil))
+    (dolist (group groups)
+      (dolist (window (group-windows group))
+	;; Don't include the current window in the list
+	(when (not (eq window (current-window)))
+	  (setq windows (cons (window-name window) windows)))))
+    windows))
+
+(defun my-window-in-group (query group)
+  "Returns a window matching QUERY in GROUP."
+  (let ((match nil)
+	(end nil)
+	(name nil))
+    (dolist (window (group-windows group))
+      (setq name (window-name window)
+	    end (min (length name) (length query)))
+      ;; Never match the current window
+      (when (and (string-equal name query :end1 end :end2 end)
+		 (not (eq window (current-window))))
+	(setq match window)
+	(return)))
+    match))
+
+(define-stumpwm-type :my-global-window-names (input prompt)
+  (or (argument-pop input)
+      (completing-read (current-screen) prompt (my-global-window-names))))
+
+(defcommand global-windowlist () (:rest)
+  "Like select, but for all groups not just the current one."
+  (let ((window-list (global-window-names)))
+    (if (null window-list)
+	(message "No Managed Windows")
+	(let ((window (select-window-from-menu window-list nil)))
+	  (message window-list)))))
+
+
+    ;; (dolist (group (screen-groups (current-screen)))
+    ;;   (setq window (my-window-in-group query group))
+    ;;   (when window
+    ;; 	(switch-to-group group)
+    ;; 	(frame-raise-window group (window-frame window) window)
+    ;; 	(return)))))
+
 (define-key *root-map* (kbd "C-l") "exec xlock")
 (define-key *root-map* (kbd "c") "exec xterm -ls")
 (define-key *root-map* (kbd "C-s") "ssh-to-host")
 (define-key *root-map* (kbd "C-f") "firefox")
+
+(define-key *root-map* (kbd "w") "windowlist")
+(define-key *root-map* (kbd "W") "grouplist")
+(define-key *root-map* (kbd "\"") "windows")
