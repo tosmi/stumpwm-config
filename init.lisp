@@ -25,6 +25,8 @@
 (setf *message-window-gravity* :center)
 (setf *input-window-gravity* :center)
 
+(setf *mouse-focus-policy* :sloppy) ;; :click, :ignore, :sloppy
+
 (set-win-bg-color "black")
 (set-focus-color "red")
 (set-unfocus-color "grey")
@@ -90,7 +92,7 @@
 (define-key *root-map* (kbd "C-s") "ssh-to-host")
 (define-key *root-map* (kbd "C-f") "firefox")
 (define-key *root-map* (kbd "C-d") "exec /usr/bin/dmenu_run")
-
-(define-key *root-map* (kbd "w") "windowlist")
+(define-key *root-map* (kbd "RET") "fullscreen")
+(define-key *root-map* (kbd "C-w") "windowlist")
 (define-key *root-map* (kbd "W") "grouplist")
 (define-key *root-map* (kbd "\"") "windows")
