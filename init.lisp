@@ -89,6 +89,7 @@
 (define-key *root-map* (kbd "c") "exec xterm -ls")
 (define-key *root-map* (kbd "C-s") "ssh-to-host")
 (define-key *root-map* (kbd "C-f") "firefox")
+(define-key *root-map* (kbd "C-d") "exec /usr/bin/dmenu_run")
 
 (define-key *root-map* (kbd "w") "windowlist")
 (define-key *root-map* (kbd "W") "grouplist")
